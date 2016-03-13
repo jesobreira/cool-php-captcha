@@ -1,6 +1,6 @@
 <?php
 /**
- * Script para la generación de CAPTCHAS
+ * Script for generating CAPTCHAS
  *
  * @author  Jose Rodriguez <josecl@gmail.com>
  * @license GPLv3
@@ -10,8 +10,15 @@
  *
  */
 
-
-session_start();
+// checking if session has been started
+if(session_status() == PHP_SESSION_NONE) {
+    if(headers_sent()) {
+        trigger_error("Cool PHP Captcha tried to start session but the headers were already sent.", E_USER_ERROR);
+        exit;
+    } else {
+        session_start();
+    }
+}
 
 
 
@@ -437,7 +444,7 @@ class SimpleCaptcha {
             }
             $coords = imagettftext($this->im, $fontsize, $degree,
                 $x, $y,
-                $this->GdFgColor, $fontfile, $letter);
+                $this->GdFgColor, dirname(__FILE__).'/'.$fontfile, $letter);
             $x += ($coords[2]-$x) + ($fontcfg['spacing']*$this->scale);
         }
 
@@ -476,7 +483,7 @@ class SimpleCaptcha {
      * Reduce the image to the final size
      */
     protected function ReduceImage() {
-        // Reduzco el tamaño de la imagen
+        // Reduzco el tamaÃ±o de la imagen
         $imResampled = imagecreatetruecolor($this->width, $this->height);
         imagecopyresampled($imResampled, $this->im,
             0, 0, 0, 0,
